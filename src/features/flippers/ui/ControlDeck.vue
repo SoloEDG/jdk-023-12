@@ -4,6 +4,7 @@ const props = defineProps<{
   plungerReady: boolean
   paused: boolean
   canPause: boolean
+  practice: boolean
 }>()
 
 const emit = defineEmits<{
@@ -77,7 +78,9 @@ function holdPlunger(event: PointerEvent, down: boolean): void {
       <button type="button" class="text-key" :disabled="!canPause" @click="emit('pause')">
         {{ paused ? '继续' : '暂停' }}
       </button>
-      <button type="button" class="text-key text-key-strong" @click="emit('restart')">重开一局</button>
+      <button type="button" class="text-key text-key-strong" @click="emit('restart')">
+        {{ practice ? '重开练习' : '重开一局' }}
+      </button>
     </div>
   </div>
 </template>

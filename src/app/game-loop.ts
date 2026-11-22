@@ -1,16 +1,20 @@
 import { commandFromInput, type FrameInput } from '@/shared/commands'
-import type { PinballDocument } from '@/shared/document'
 import { absorbZones, tickBonus } from '@/features/bonus'
 import { advanceControls } from '@/features/flippers'
 import { persist, syncRecords } from '@/features/records'
 import { simulateBall } from '@/features/scoring'
+import { applyPracticeDrain } from '@/features/practice'
 import { anchors, consumeContacts, publishGates, sampleRamp, sampleScoop, stickPlunger, syncTable } from '@/features/table'
 import { applyDrain, restartGame, togglePause } from '@/app/cabinet-actions'
+import type { GameSession } from '@/app/session'
 
-export function runFrame(doc: PinballDocument, input: FrameInput, dtMs: number): void {
+export function runFrame(session: GameSession, input: FrameInput, dtMs: number): void {
+  const doc = session.getActive()
+  const inPractice = session.getPractice() !== null
   const command = commandFromInput(input)
   if (command?.type === 'restart') {
-    restartGame(doc)
+    if (inPractice) session.restartPractice()
+    else restartGame(doc)
     return
   }
   if (command?.type === 'pause-toggle') {
@@ -32,24 +36,27 @@ export function runFrame(doc: PinballDocument, input: FrameInput, dtMs: number):
     consumeContacts(doc, events)
     absorbZones(doc, events)
     publishGates(doc)
-    if (doc.signals.drain) applyDrain(doc)
+    if (doc.signals.drain) {
+      if (inPractice) applyPracticeDrain(doc)
+      else applyDrain(doc)
+    }
   }
-  syncRecords(doc)
+  if (!inPractice) syncRecords(doc)
 }
 
-export function startLoop(doc: PinballDocument, pull: () => FrameInput): () => void {
+export function startLoop(session: GameSession, pull: () => FrameInput): () => void {
   let last = performance.now()
   let handle = 0
   const onHide = (): void => {
-    if (document.hidden) persist(doc)
+    if (document.hidden) persist(session.getLive())
   }
-  const onLeave = (): void => persist(doc)
+  const onLeave = (): void => persist(session.getLive())
   document.addEventListener('visibilitychange', onHide)
   window.addEventListener('pagehide', onLeave)
   const tick = (now: number): void => {
     const step = Math.min(32, Math.max(0, now - last))
     last = now
-    runFrame(doc, pull(), step)
+    runFrame(session, pull(), step)
     handle = requestAnimationFrame(tick)
   }
   handle = requestAnimationFrame(tick)

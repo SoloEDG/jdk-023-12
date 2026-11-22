@@ -113,6 +113,13 @@ export interface RunMeta {
   storageWarned: boolean
 }
 
+export type SpawnId = 'plunger' | 'center' | 'lanes' | 'left-flipper' | 'right-flipper' | 'hole'
+
+export interface PracticeMeta {
+  spawn: SpawnId
+  balls: number
+}
+
 export interface PinballDocument {
   phase: Phase
   phaseBeforePause: Phase | null
@@ -133,6 +140,7 @@ export interface PinballDocument {
   feedSeq: number
   note: NoteState
   run: RunMeta
+  practice: PracticeMeta
   signals: { drain: boolean }
 }
 
@@ -175,6 +183,7 @@ export function createDocument(): PinballDocument {
     feedSeq: 0,
     note: { text: '', ms: 0 },
     run: { launched: false, committed: false, playMs: 0, storedScore: 0, storageWarned: false },
+    practice: { spawn: 'plunger', balls: 0 },
     signals: { drain: false },
   }
 }

@@ -294,6 +294,67 @@ button:focus-visible, canvas:focus-visible {
 
 .text-key-strong { background: #c81d3a; color: #fff6e8; }
 
+.score-eyebrow { margin: 0 0 4px; color: #d7a441; }
+
+.score-practice {
+  border-color: #59d3b0;
+  box-shadow: inset 0 0 0 2px #1c6b58;
+}
+
+.score-practice .score-eyebrow { color: #59d3b0; }
+
+.marquee-note {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: #ffd9a8;
+}
+
+.practice-panel { border-color: #59d3b0; }
+
+.practice-score {
+  margin: 6px 0 0;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 30px;
+  line-height: 1;
+  color: #11493d;
+}
+
+.spawn-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.spawn-key {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 7px 9px;
+  text-align: left;
+  background: #f3e2c4;
+  border: 1px solid #d7b98a;
+  color: #24140f;
+}
+
+.spawn-key span {
+  font-size: 12px;
+  color: #5c3b2e;
+}
+
+.spawn-key.picked {
+  background: #11493d;
+  border-color: #11493d;
+  color: #f3e2c4;
+}
+
+.spawn-key.picked span { color: #bfe6d8; }
+
+.practice-actions { display: flex; gap: 8px; margin-top: 10px; }
+
+.practice-actions .text-key { min-height: 44px; }
+
 button:disabled { opacity: 0.45; cursor: not-allowed; }
 
 @media (max-width: 860px) {
